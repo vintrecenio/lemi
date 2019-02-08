@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Lemi</string>
+    <string name="city_select">Tap to select a city</string>
+    <string name="search_hint">Search for city</string>
+</resources>
