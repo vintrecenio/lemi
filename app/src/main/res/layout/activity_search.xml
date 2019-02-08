@@ -46,7 +46,7 @@
                 android:drawableStart="@drawable/ic_search"
                 android:drawablePadding="8dp"
                 android:hint="@string/search_hint"
-                android:maxLines="1"
+                android:singleLine="true"
                 android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintHorizontal_weight="0.9"
