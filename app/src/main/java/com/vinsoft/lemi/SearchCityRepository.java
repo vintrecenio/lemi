@@ -1,12 +1,8 @@
 package com.vinsoft.lemi;
 
-import android.content.Context;
 import android.util.Log;
 
-import com.vinsoft.lemi.room.DatabaseHelper;
-
 import java.util.ArrayList;
-import java.util.List;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -16,23 +12,25 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class CityRepository {
+public class SearchCityRepository {
 
     private ApiService apiService;
+    private String mParam;
     private CompositeDisposable compositeDisposable;
     private MutableLiveData<ArrayList<Cities>> mutableCities = new MutableLiveData<>();
-    private DatabaseHelper helper;
 
-    public CityRepository(Context context, CompositeDisposable compositeDisposable) {
+    public SearchCityRepository(CompositeDisposable compositeDisposable, String param) {
+
         this.compositeDisposable = compositeDisposable;
-        helper = new DatabaseHelper(context);
+        this.mParam = param;
+
     }
 
-    public LiveData<List<Cities>> getCities(){
+    public MutableLiveData<ArrayList<Cities>> searchCities(){
 
         apiService = ServiceGenerator.createService(ApiService.class);
 
-        apiService.getCities()
+        apiService.searchCities(mParam)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SingleObserver<ArrayList<Cities>>() {
@@ -43,19 +41,18 @@ public class CityRepository {
 
                     @Override
                     public void onSuccess(ArrayList<Cities> cities) {
-                        List<Cities> citiesList = cities;
-//                        mutableCities.setValue(cities);
-                        helper.inserCities(citiesList);
+
+                        mutableCities.setValue(cities);
                     }
 
                     @Override
                     public void onError(Throwable e) {
+
                         Log.e("RETRO_ERR", e.toString());
 
                     }
                 });
 
-        return helper.getCities();
-//        return mutableCities;
+        return mutableCities;
     }
 }

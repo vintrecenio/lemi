@@ -3,7 +3,17 @@ package com.vinsoft.lemi;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "Cities")
 public class Cities {
+    @PrimaryKey
+    @SerializedName("id")
+    @NonNull
+    private String id;
+
     @SerializedName("name")
     @Expose
     private String name;
@@ -19,9 +29,6 @@ public class Cities {
     @SerializedName("type")
     @Expose
     private String type;
-    @SerializedName("id")
-    @Expose
-    private String id;
     @SerializedName("banner")
     @Expose
     private String banner;

@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.vinsoft.lemi.ApiService;
 import com.vinsoft.lemi.Cities;
+import com.vinsoft.lemi.SearchCityRepository;
 import com.vinsoft.lemi.ServiceGenerator;
 
 import java.util.ArrayList;
@@ -22,40 +23,17 @@ import io.reactivex.schedulers.Schedulers;
 
 public class CitySearchViewModel extends AndroidViewModel {
 
-    private MutableLiveData<ArrayList<Cities>> mutableCities = new MutableLiveData<>();;
-    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private SearchCityRepository cityRepository;
 
-    public CitySearchViewModel(@NonNull Application application, String param) {
+    public CitySearchViewModel(@NonNull Application application, CompositeDisposable compositeDisposable, String param) {
         super(application);
 
-        ApiService apiService = ServiceGenerator.createService(ApiService.class);
+        cityRepository = new SearchCityRepository(compositeDisposable, param);
 
-        apiService.searchCities(param)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SingleObserver<ArrayList<Cities>>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        compositeDisposable.add(d);
-                    }
-
-                    @Override
-                    public void onSuccess(ArrayList<Cities> cities) {
-
-                        mutableCities.setValue(cities);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                        Log.e("RETRO_ERR", e.toString());
-
-                    }
-                });
     }
 
-    public LiveData<ArrayList<Cities>> getCities(){
-        return mutableCities;
+    public MutableLiveData<ArrayList<Cities>> getCities(){
+        return cityRepository.searchCities();
     }
 
 }

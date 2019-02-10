@@ -12,6 +12,7 @@ import com.vinsoft.lemi.SearchActivity;
 import com.vinsoft.lemi.ServiceGenerator;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -27,15 +28,14 @@ public class CityViewModel extends AndroidViewModel {
 
     private CityRepository cityRepository;
 
-
     public CityViewModel(@NonNull Application application, CompositeDisposable compositeDisposable) {
         super(application);
 
-        cityRepository = new CityRepository(compositeDisposable);
+        cityRepository = new CityRepository(application.getApplicationContext(), compositeDisposable);
 
     }
 
-    public LiveData<ArrayList<Cities>> getCities(){
+    public LiveData<List<Cities>> getCities(){
         return cityRepository.getCities();
     }
 }

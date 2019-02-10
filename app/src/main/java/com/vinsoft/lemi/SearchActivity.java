@@ -22,10 +22,12 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.vinsoft.lemi.viewmodels.CitySearchViewModel;
 import com.vinsoft.lemi.viewmodels.CityViewModel;
-import com.vinsoft.lemi.viewmodels.ViewModelFactory;
+import com.vinsoft.lemi.vmfactories.ViewModelFactory;
+import com.vinsoft.lemi.vmfactories.ViewModelFactorySearch;
 
 import java.util.ArrayList;
 
@@ -33,8 +35,6 @@ public class SearchActivity extends AppCompatActivity {
 
     CityAdapter cityAdapter;
     CityViewModel cityViewModel;
-//    CitySearchViewModel citySearchViewModel;
-    ArrayList<Cities> citiesArrayList = new ArrayList<>();
     CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     @BindView(R.id.rvCities)
@@ -95,21 +95,28 @@ public class SearchActivity extends AppCompatActivity {
             recyclerCities.setAdapter(null);
             cityViewModel = ViewModelProviders.of(this, new ViewModelFactory(this.getApplication(), compositeDisposable)).get(CityViewModel.class);
             cityViewModel.getCities().observe(this, cities -> {
-            cityAdapter = new CityAdapter(cities, SearchActivity.this);
-            recyclerCities.setAdapter(cityAdapter);
-            cityAdapter.notifyDataSetChanged();
+                if(cities != null){
+                    ArrayList<Cities> citiesArrayList = new ArrayList<>(cities);
+                    cityAdapter = new CityAdapter(citiesArrayList, SearchActivity.this);
+                    recyclerCities.setAdapter(cityAdapter);
+                    cityAdapter.notifyDataSetChanged();
+                }else{
+                    Toast.makeText(this, "Unable to get cities", Toast.LENGTH_SHORT).show();
+                }
             loader.setVisibility(View.GONE);
         });
     }
 
-/*    private void searchCities(String params){
-            citySearchViewModel = ViewModelProviders.of(this, new ViewModelFactory(this.getApplication(), params)).get(CitySearchViewModel.class);
+/*
+    private void searchCities(String params){
+            citySearchViewModel = ViewModelProviders.of(this, new ViewModelFactorySearch(this.getApplication(), compositeDisposable, params)).get(CitySearchViewModel.class);
             citySearchViewModel.getCities().observe(this, cities -> {
             cityAdapter = new CityAdapter(cities, SearchActivity.this);
             recyclerCities.setAdapter(cityAdapter);
             cityAdapter.notifyDataSetChanged();
         });
-    }*/
+    }
+*/
 
     private void searchCities(String param){
 
@@ -130,12 +137,9 @@ public class SearchActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(ArrayList<Cities> cities) {
 
-                        citiesArrayList.clear();
-                        citiesArrayList.addAll(cities);
-
                         loader.setVisibility(View.GONE);
 
-                        cityAdapter = new CityAdapter(citiesArrayList, SearchActivity.this);
+                        cityAdapter = new CityAdapter(cities, SearchActivity.this);
                         recyclerCities.setAdapter(cityAdapter);
                         cityAdapter.notifyDataSetChanged();
                     }
