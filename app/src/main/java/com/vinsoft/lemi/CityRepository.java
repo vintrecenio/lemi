@@ -43,9 +43,8 @@ public class CityRepository {
 
                     @Override
                     public void onSuccess(ArrayList<Cities> cities) {
-                        List<Cities> citiesList = cities;
 //                        mutableCities.setValue(cities);
-                        helper.inserCities(citiesList);
+                        helper.inserCities(cities);
                     }
 
                     @Override
