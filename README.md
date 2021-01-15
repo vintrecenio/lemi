@@ -1,5 +1,5 @@
 # lemi
-Lemi app exam
+Lemi app demo
 
 Requirements:
 - Android Studio 3.2.1
